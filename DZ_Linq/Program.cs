@@ -9,6 +9,7 @@
 using System;
 using System.Collections;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 
 namespace DZ_LINQ
@@ -30,218 +31,370 @@ namespace DZ_LINQ
     }
     class Program
     {
+        static void Task1()
+        {
+            Console.WriteLine(
+                "\nLinqBegin1\n"
+                + "Дана целочисленная последовательность, содержащая\n"
+                + "как положительные, так и отрицательные числа.Вывести ее первый\n"
+                + "положительный элемент и последний отрицательный элемент.\n"
+                + "int[] e = { 4, 12, -6, -4, -32, 47, 32, 96, 0, 23, -5, -3, -75, 15 }");
+            int[] e = { 4, 12, -6, -4, -32, 47, 32, 96, 0, 23, -5, -3, -75, 15 };
+            Console.WriteLine(e.FirstOrDefault(a => a > 0));
+            Console.WriteLine(e.LastOrDefault(a => a < 0));
+        }
+        static void Task2()
+        {
+            Console.WriteLine(
+                "\nLinqBegin2\n"
+                + "Даны цифра D (однозначное целое число) и целочисленная последовательность A.\n"
+                + "Вывести первый положительный элемент последовательности A, оканчивающийся цифрой  D.\n"
+                + "Если требуемых элементов в последовательности A нет, то вывести 0.\n"
+                + "int D = 2;\n"
+                + "int[] A = { 4, 12, -6, -4, -32, 47, 32, 96, 0, 23, -5, -3, -75, 15 };");
+            int D = 2;
+            int[] A = { 4, 12, -6, -4, -32, 47, 32, 96, 0, 23, -5, -3, -75, 15 };
+            Console.WriteLine(
+                A.FirstOrDefault(r => r > 0 && r.ToString().EndsWith(D.ToString(), StringComparison.CurrentCulture))
+                );
+        }
+        static void Task3()
+        {
+            Console.WriteLine(
+                "\nLinqBegin3\n"
+                + "Даны целое число L(> 0) и строковая последовательность A.\n"
+                + "Вывести последнюю строку из A, начинающуюся с цифры и имеющую длину L.\n"
+                + "Если требуемых строк в последовательности A нет, то вывести строку «Not found».\n"
+                + "Указание.Для обработки ситуации, связанной с отсутствием требуемых строк, использовать операцию ??."
+                + "int L = 4;\n"
+                + "string[] A = { \"8pOl\", \"\", \"OOHNG\", \"2J\", \"jle\", \"ojRa\", \"UTq\", \"4A3\", \"\", \"bh\", \"p\", \"daW\" };"
+                );
+            int L = 4;
+            string[] A = { "8pOl", "", "OOHNG", "2J", "jle", "ojRa", "UTq", "4A3", "", "bh", "p", "daW" };
+            Console.WriteLine(
+                A.LastOrDefault(r => r.Length == L && r.IndexOfAny(
+                    new[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' }) == 0) ?? "Not found"
+                );
+        }
 
+        static void Task4()
+        {
+            Console.WriteLine(
+                "\nLinqBegin4:\n"
+                + "Даны символ С и строковая последовательность A.\n"
+                + "Если A содержит единственный элемент, оканчивающийся символом C,\n"
+                + "то вывести этот элемент; если требуемых строк в A нет, то\n"
+                + "вывести пустую строку; если требуемых строк больше одной, то вывести строку «Error».\n"
+                + "Указание.Использовать try-блок для перехвата возможного исключения.\n"
+                + "Примечание.Решение данной задачи приведено в п. 5.1.\n"
+                + "const char c = 'l';\n"
+                + "string[] A = { \"8pOvl\", \"\", \"OOHNG\", \"2J\", \"jle\", \"ojRa\", \"UTq\", \"4A3\", \"\", \"bh\", \"p\", \"daW\" };\n");
+            const char c = 'l';
+            string[] A = { "8pOvl", "", "OOHNG", "2J", "jle", "ojRa", "UTq", "4A3", "", "bh", "p", "daW" };
+            try
+            {
+                Console.WriteLine(
+                    A.SingleOrDefault(e => e.Length != 0 && e[e.Length - 1] == c) ?? ""
+                    );
+            }
+            catch
+            {
+                Console.WriteLine("Error");
+            }
+        }
+        static void Task5()
+        {
+            Console.WriteLine(
+                "\nLinqBegin5\n"
+                + "Даны символ С и строковая последовательность A.\n"
+                + "Найти количество элементов A, которые содержат более одного\n"
+                + "символа и при этом начинаются и оканчиваются символом C.\n"
+                + "char C = 'O';\n"
+                + "string[] A = { \"8pOl\", \"\", \"OOHNGO\", \"2J\", \"OjleO\", \"ojRa\", \"OUOTq\", \"4A3\", \"\", \"bh\", \"p\", \"daW\" };\n"
+                );
+            char C = 'O';
+            string[] A = { "8pOl", "", "OOHNGO", "2J", "OjleO", "ojRa", "OUOTq", "4A3", "", "bh", "p", "daW" };
+            Console.WriteLine(
+                A.Count(r => r.Length > 1
+                && r.StartsWith(C.ToString(), StringComparison.Ordinal)
+                && r.EndsWith(C.ToString(), StringComparison.Ordinal))
+                );
+        }
+        static void Task6()
+        {
+            Console.WriteLine(
+                "\nLinqBegin6\n"
+                + "Дана строковая последовательность.\n"
+                + "Найти сумму длин всех строк, входящих в данную последовательность.\n"
+                + "string[] A = { \"8pOl\", \"\", \"OOHNGO\", \"2J\", \"OjleO\", \"ojRa\", \"OUOTq\", \"4A3\", \"\", \"bh\", \"p\", \"daW\" };\n"
+                );
+            string[] A = { "8pOl", "", "OOHNGO", "2J", "OjleO", "ojRa", "OUOTq", "4A3", "", "bh", "p", "daW" };
+            Console.Write(
+                A.Sum(r => r.Length)
+                );
+        }
+        static void Task7()
+        {
+            Console.WriteLine(
+                "\nLinqBegin7\n"
+                + "Дана целочисленная последовательность.\n"
+                + "Найти количество ее отрицательных элементов, а также их сумму.\n"
+                + "Если отрицательные элементы отсутствуют, то дважды вывести 0.\n"
+                + "int[] A = { 4, 12, -6, 4, -32, -47, 32, 96, 0, 23, 5, -3, -75, 15 };\n"
+                );
+            int[] A = { 4, 12, -6, 4, -32, -47, 32, 96, 0, 23, 5, -3, -75, 15 };
+            Console.WriteLine(
+                "Count = {0}, Sum = {1}",
+                A.Count(r => r < 0), A.Sum(r => r < 0 ? r : 0)
+                );
+        }
+        static void Task8()
+        {
+            Console.WriteLine(
+                "\nLinqBegin8\n"
+                + "Дана целочисленная последовательность.\n"
+                + "Найти количество ее положительных двузначных элементов,\n"
+                + "а также их среднее арифметическое (как вещественное число).\n"
+                + "Если требуемые элементы отсутствуют, то дважды вывести 0 \n"
+                + "(первый раз как целое, второй – как вещественное).\n"
+                + "int[] A = { -4, -12, -6, -4, 32, -47, 32, -96, 0, 23, -5, 3, -75, -15 };");
+            int[] A = { -4, -12, -6, -4, 32, -47, 32, -96, 0, 23, -5, 3, -75, -15 };
+            var res = from a in A
+                      where a > 0 && a.ToString().Length == 2
+                      select a;
+            Console.WriteLine(
+                "Count = {0}, Sum = {1}",
+                res.Count(),
+                res.Count() > 0 ? res.Average() : 0.0);
+        }
+        static void Task9()
+        {
+            Console.WriteLine(
+                "\nLinqBegin9\n"
+                + "Дана целочисленная последовательность.\n"
+                + "Вывести ее минимальный положительный элемент или число 0,\n"
+                + "если последовательность не содержит положительных элементов.\n"
+                + "int[] A = { -4, -12, -6, -4, 32, -47, -32, 96, -23, -5, 3, -75, -15 };\n"
+                + "\n"
+                + "\n"
+                + "\n");
+            int[] A = { -4, -12, -6, -4, 32, -47, -32, 96, -23, -5, 3, -75, -15 };
+            var res = from a in A
+                      where a > 0
+                      select a;
+            Console.WriteLine(
+                "Min = {0}",
+                res.Count() > 0 ? res.Min() : 0);
+        }
+        static void Task10()
+        {
+            Console.WriteLine(
+                "\nLinqBegin10\n"
+                + "Даны целое число L(> 0) и строковая последовательность A.\n"
+                + "Строки последовательности A содержат только заглавные буквы латинского алфавита.\n"
+                + "Среди всех строк из A, имеющих длину L, найти наибольшую (в смысле лексикографического порядка).\n"
+                + "Вывести эту строку или пустую строку, если последовательность не содержит строк длины L.\n"
+                + "int L = 5;\n"
+                + "string[] A = { \"HDSJ\", \"\", \"OOHNGO\", \"J\", \"OSFHO\", \"HTREWDA\", \"WUGOT\", \"EW\", \"QWRQRQ\", \"QWERG\", \"WERGX\", \"FASSS\" };"
+                );
+            int L = 5;
+            string[] A = { "HDSJ", "", "OOHNGO", "J", "OSFHO", "HTREWDA", "WUGOT", "EW", "QWRQRQ", "QWERG", "WERGX", "FASSS" };
+            Console.WriteLine(
+                "Max str = {0}",
+                (from a in A
+                 where a.Length == L
+                 orderby a descending
+                 select a)
+                 .FirstOrDefault() ?? "");
+        }
+        static void Task11()
+        {
+            Console.WriteLine(
+                "\nLinqBegin11\n"
+                + "Дана последовательность непустых строк.\n"
+                + "Используя метод Aggregate, получить строку, состоящую из\n"
+                + "начальных символов всех строк исходной последовательности.\n"
+                + "string[] A = { \"HDSJ\", \"\", \"OOHNGO\", \"J\", \"OSFHO\", \"HTREWDA\", \"WUGOT\", \"EW\", \"QWRQRQ\", \"QWERG\", \"WERGX\", \"FASSS\" };"
+                );
+            string[] A = { "HDSJ", "", "OOHNGO", "J", "OSFHO", "HTREWDA", "WUGOT", "EW", "QWRQRQ", "QWERG", "WERGX", "FASSS" };
+            Console.WriteLine(
+                "Aggregate str = {0}",
+                (from a in A
+                 where (a != null && a.Length > 0)
+                 select a[0])
+                 .Aggregate("", (r, c) => r + c));
+        }
+        static void Task12()
+        {
+            Console.WriteLine(
+                "\nLinqBegin12\n"
+                + "Дана целочисленная последовательность.\n"
+                + "Используя метод Aggregate, найти произведение последних цифр\n"
+                + "всех элементов последовательности.\n"
+                + "Чтобы избежать целочисленного переполнения,\n"
+                + "при вычислении произведения использовать вещественный числовой тип.\n"
+                + "int[] A = { -4, 12, -6, -4, 32, -47, -32, 96, -23, -5, 3, -75, -15 };"
+                );
+            int[] A = { -4, 12, -6, -4, 32, -47, -32, 96, -23, -5, 3, -75, -15 };
+            Console.WriteLine(
+                "Mult = {0}",
+                (from a in A
+                 let r = Char.GetNumericValue(a.ToString().LastOrDefault())
+                 select r)
+                 .Aggregate(1.0, (i, j) => i * j));
+        }
+        static void Task13()
+        {
+            Console.WriteLine(
+                "\nLinqBegin13\n"
+                + "Дано целое число N (> 0). Используя методы Range\n"
+                + "и Sum, найти сумму 1 + (1/2) + … + (1/N) (как вещественное число).\n"
+                + "int A = 6;"
+                );
+            int A = 6;
+            Console.WriteLine(
+                "Sum = {0}",
+                Enumerable.Range(1, A)
+                .Sum(i => (1.0 / i)));
+        }
+        static void Task14()
+        {
+            Console.WriteLine(
+                "\nLinqBegin14\n"
+                + "Даны целые числа A и B(A< B).\n"
+                + "Используя мето-ды Range и Average, найти среднее арифметическое квадратов всех\n"
+                + "целых чисел от A до B включительно:\n"
+                + "(A^2 + (A + 1)^2 + … + B^2)/(B – A + 1) (как вещественное число).\n"
+                + "int A = 5, B = 10;");
+            int A = 5, B = 10;
+            Console.WriteLine(
+                "Avg = {0}",
+                Enumerable.Range(A, B - A + 1)
+                .Average(i => i * i));
+        }
+        static void Task15()
+        {
+            Console.WriteLine(
+                "\nLinqBegin15:\n"
+                + "Дано целое число N(0 <= N <= 15). Используя методы Range и Aggregate,\n"
+                + "найти факториал числа N: N! = 1·2·…·N при N >= 1; 0! = 1.\n"
+                + "Чтобы избежать целочисленного переполнения, при\n"
+                + "вычислении факториала использовать вещественный числовой тип.\n"
+                + "Примечание.Решение данной задачи приведено в п. 5.2.\n"
+                + "const int N = 5;");
+            int N = 5;
+            Console.WriteLine(
+                Enumerable.Range(1, N)
+                .Aggregate(1.0, (a, e) => a * e));
+        }
+        //2.2. Фильтрация, сортировка,
+        //теоретико-множественные операции
+        //Изучаемые запросы LINQ:
+        //Where , TakeWhile , SkipWhile , Take , Skip (фильтрация);
+        //OrderBy , OrderByDescending , ThenBy , ThenByDescending (сортировка);
+        //Distinct , Reverse (удаление повторяющихся элементов и инвертирование);
+        //Union , Intersect , Except (теоретико-множественные операции)
+        static void Task16()
+        {
+            Console.WriteLine(
+                "\nLinqBegin16:\n"
+                + "Дана целочисленная последовательность.\n"
+                + "Извлечь из нее все положительные числа,\n"
+                + "сохранив их исходный порядок следования.\n"
+                + "int[] A = { -4, 12, -6, -4, 32, -47, -32, 96, -23, -5, 3, -75, -15 };");
+            int[] A = { -4, 12, -6, -4, 32, -47, -32, 96, -23, -5, 3, -75, -15 };
+            (from a in A
+             where a > 0
+             select a).Show();
+            Console.WriteLine();
+        }
+        static void Task17()
+        {
+            Console.WriteLine(
+                "\nLinqBegin17\n"
+                + "Дана целочисленная последовательность.\n"
+                + "Извлечь из нее все нечетные числа, сохранив их исходный порядок следования\n"
+                + "и удалив все вхождения повторяющихся элементов, кроме первых.\n"
+                + "int[] A = { -4, 12, -6, -4, 32, -47, -32, 96, -23, -5, 3, -75, -15 };");
+            int[] A = { -4, 12, -6, -4, 32, -47, -32, 96, -23, -5, 3, -75, -15 };
+            (from a in A
+             where a % 2 != 0
+             select a).Distinct().Show();
+        }
+        static void Task18()
+        {
+            Console.WriteLine(
+                "\nLinqBegin18\n"
+                + "Дана целочисленная последовательность.\n"
+                + "Извлечь из нее все четные отрицательные числа,\n"
+                + "поменяв порядок извлеченных чисел на обратный.\n"
+                + "int[] A = { -4, 12, -6, -4, 32, -47, -32, 96, -23, -5, 3, -75, -15 };");
+            int[] A = { -4, 12, -6, -4, 32, -47, -32, 96, -23, -5, 3, -75, -15 };
+            (from a in A
+             where a % 2 != 0 && a < 0
+             select a).Reverse().Show();
+        }
+        static void Task19()
+        {
+            Console.WriteLine(
+                "\nLinqBegin19\n"
+                + "Даны цифра D(целое однозначное число) и целочисленная последовательность A.\n"
+                + "Извлечь из A все различные положительные числа, оканчивающиеся цифрой D(в исходном порядке).\n"
+                + "При наличии повторяющихся элементов удалять все их вхождения, кроме последних.\n"
+                + "Указание.Последовательно применить методы Reverse, Distinct, Reverse.\n"
+                + "int D = 4;\n"
+                + "int[] A = { -4, 12, -6, -4, 34, -47, -34, 96, -24, -5, 34, 3, -75, -4, -15 };\n"
+                + "\n");
+            int D = 4;
+            int[] A = { -4, 12, -6, -4, 34, -47, -34, 96, -24, -5, 34, 3, -75, -4, -15 };
+            (from a in A
+             where a.ToString().EndsWith(D.ToString())
+             select a).Reverse().Distinct().Reverse().Show();
+        }
+        static void Task20()
+        {
+            Console.WriteLine(
+                "\nLinqBegin20\n"
+                + "Дана целочисленная последовательность.\n"
+                + "Извлечь из нее все положительные двузначные числа,\n"
+                + "отсортировав их по возрастанию.\n"
+                + "int[] A = { -4, 12, -6, -4, 34, -47, -34, 96, -24, -5, 34, 3, -75, -4, -15 };");
+            int[] A = { -4, 12, -6, -4, 34, -47, -34, 96, -24, -5, 34, 3, -75, -4, -15 };
+            (from a in A
+             where a > 0 && a.ToString().Length == 2
+             select a)
+
+        }
         public static void Main(string[] args)
         {
+            Console.WriteLine("Input task: ");
+            string N = Console.ReadLine();
+            //Получаем методы
+            MethodInfo[] MI = typeof(Program).GetMethods(BindingFlags.Static | BindingFlags.NonPublic);
+            //Показываем их
+            try
+            {
+                //Выбираем метод который нам нужен по имени
+                MethodInfo method = MI.Where(a => a.Name == "Task" + N).First();
+                //Вызываем его
+                method.Invoke(null, null);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
 
 
-            /*LinqBegin1.Дана целочисленная последовательность, содержащая 
-			как положительные, так и отрицательные числа. Вывести ее первый 
-			положительный элемент и последний отрицательный элемент. */
-            {
-                Console.WriteLine("LinqBegin1");
-                int[] e = { 4, 12, -6, -4, -32, 47, 32, 96, 0, 23, -5, -3, -75, 15 };
-                e.FirstOrDefault(a => a > 0).Show();
-                e.LastOrDefault(a => a < 0).Show();
-                Console.WriteLine("\n");
-            }
-            //LinqBegin2.Даны цифра D (однозначное целое число) и целочисленная последовательность A.
-            //Вывести первый положительный элемент последовательности A, оканчивающийся цифрой  D.
-            //Если требуемых элементов в последовательности A нет, то вывести 0.
-            {
-                Console.WriteLine("LinqBegin2");
-                int D = 2;
-                int[] A = { 4, 12, -6, -4, -32, 47, 32, 96, 0, 23, -5, -3, -75, 15 };
-                A.FirstOrDefault(r => r > 0 && r.ToString().EndsWith(D.ToString(), StringComparison.CurrentCulture)).Show();
-                Console.WriteLine("\n");
-            }
-            //LinqBegin3.Даны целое число L(> 0) и строковая последовательность A.
-            //Вывести последнюю строку из A, начинающуюся с цифры
-            //и имеющую длину L. Если требуемых строк в последовательности
-            //A нет, то вывести строку «Not found».
-            //Указание.Для обработки ситуации, связанной с отсутствием требуемых строк, использовать операцию ??.
-            {
-                Console.WriteLine("LinqBegin3");
-                int L = 4;
-                string[] A = { "8pOl", "", "OOHNG", "2J", "jle", "ojRa", "UTq", "4A3", "", "bh", "p", "daW" };
-                Console.Write(A.LastOrDefault(r => r.Length == L && r.IndexOfAny(new[] {
-                             '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' }) == 0) ?? "Not found");
-                Console.WriteLine("\n");
-            }
-            //LinqBegin4.Даны символ С и строковая последовательность A.
-            //Если A содержит единственный элемент, оканчивающийся символом C,
-            //то вывести этот элемент; если требуемых строк в A нет, то
-            //вывести пустую строку; если требуемых строк больше одной, то вывести строку «Error».
-            //Указание.Использовать try-блок для перехвата возможного исключения.
-            //Примечание.Решение данной задачи приведено в п. 5.1.
-            {
-                Console.WriteLine("LinqBegin4:");
-                const char c = 'l';
-                string[] A = { "8pOvl", "", "OOHNG", "2J", "jle", "ojRa", "UTq", "4A3", "", "bh", "p", "daW" };
-                try
-                {
-                    Console.Write(A.SingleOrDefault(e => e.Length != 0 && e[e.Length - 1] == c) ?? "");
-                }
-                catch
-                {
-                    Console.Write("Error");
-                }
-                Console.WriteLine("\n");
-            }
-            //LinqBegin5.Даны символ С и строковая последовательность A.
-            //Найти количество элементов A, которые содержат более одного
-            //символа и при этом начинаются и оканчиваются символом C.
-            {
-                Console.WriteLine("LinqBegin5");
-                char C = 'O';
-                string[] A = { "8pOl", "", "OOHNGO", "2J", "OjleO", "ojRa", "OUOTq", "4A3", "", "bh", "p", "daW" };
-                Console.Write(A.Count(r => r.Length > 1
-                                      && r.StartsWith(C.ToString(), StringComparison.Ordinal)
-                                      && r.EndsWith(C.ToString(), StringComparison.Ordinal))
-                                     );
-                Console.WriteLine("\n");
-            }
-            //LinqBegin6.Дана строковая последовательность. Найти сумму
-            //длин всех строк, входящих в данную последовательность.
-            {
-                Console.WriteLine("LinqBegin6");
-                string[] A = { "8pOl", "", "OOHNGO", "2J", "OjleO", "ojRa", "OUOTq", "4A3", "", "bh", "p", "daW" };
-                Console.Write(A.Sum(r => r.Length));
-                Console.WriteLine("\n");
-            }
-            //LinqBegin7.Дана целочисленная последовательность.
-            //Найти количество ее отрицательных элементов, а также их сумму.
-            //Если отрицательные элементы отсутствуют, то дважды вывести 0.
-            {
-                Console.WriteLine("LinqBegin7");
-                int[] A = { 4, 12, -6, 4, -32, -47, 32, 96, 0, 23, 5, -3, -75, 15 };
-                Console.Write("Count = {0}, Sum = {1}", A.Count(r => r < 0), A.Sum(r => r < 0 ? r : 0));
-                Console.WriteLine("\n");
-            }
-            //LinqBegin8.Дана целочисленная последовательность. Найти
-            //количество ее положительных двузначных элементов, а также их
-            //среднее арифметическое (как вещественное число). Если требуемые
-            //элементы отсутствуют, то дважды вывести 0 (первый раз как целое,
-            //второй – как вещественное).
-            {
-                Console.WriteLine("LinqBegin8");
-                int[] A = { -4, -12, -6, -4, 32, -47, 32, -96, 0, 23, -5, 3, -75, -15 };
-                var res = (from a in A
-                          where a > 0 && a.ToString().Length == 2
-                          select a);
-                Console.Write("Count = {0}, Sum = {1}", res.Count(), res.Count() > 0 ? res.Average() : 0.0);
-                Console.WriteLine("\n");
-            }
-            //LinqBegin9.Дана целочисленная последовательность. Вывести ее
-            //минимальный положительный элемент или число 0,
-            //если последовательность не содержит положительных элементов.
-            {
-                Console.WriteLine("LinqBegin9");
-                int[] A = { -4, -12, -6, -4, 32, -47, -32, 96, -23, -5, 3, -75, -15 };
-                var res = from a in A
-                          where a > 0
-                          select a;
-                Console.Write("Min = {0}", res.Count() > 0 ? res.Min() : 0);
-                Console.WriteLine("\n");
-            }
-            //LinqBegin10.Даны целое число L(> 0) и строковая последовательность A.
-            //Строки последовательности A содержат только заглавные буквы латинского алфавита.
-            //Среди всех строк из A, имеющих длину L, найти наибольшую (в смысле лексикографического порядка).
-            //Вывести эту строку или пустую строку, если последовательность не содержит строк длины L.
-            {
-                Console.WriteLine("LinqBegin10");
-                int L = 5;
-                string[] A = { "HDSJ", "", "OOHNGO", "J", "OSFHO", "HTREWDA", "WUGOT", "EW", "QWRQRQ", "QWERG", "WERGX", "FASSS" };
-                var res = (from a in A
-                           where a.Length == L
-                           orderby a descending
-                           select a).FirstOrDefault() ?? "";
-                Console.Write("Max str = {0}", res);
-                Console.WriteLine("\n");
-            }
-            //LinqBegin11.Дана последовательность непустых строк.
-            //Используя метод Aggregate, получить строку, состоящую из
-            //начальных символов всех строк исходной последовательности.
-            {
-                Console.WriteLine("LinqBegin11");
-                string[] A = { "HDSJ", "", "OOHNGO", "J", "OSFHO", "HTREWDA", "WUGOT", "EW", "QWRQRQ", "QWERG", "WERGX", "FASSS" };
-                var res = (from a in A
-                           where (a != null && a.Length > 0)
-                           select a[0]).Aggregate("", (r, c) => r + c);
-                Console.Write("Aggregate str = {0}", res);
-                Console.WriteLine("\n");
-            }
-            //LinqBegin12.Дана целочисленная последовательность.
-            //Используя метод Aggregate, найти произведение последних цифр
-            //всех элементов последовательности.
-            //Чтобы избежать целочисленного переполнения,
-            //при вычислении произведения использовать вещественный числовой тип.
-            {
-                Console.WriteLine("LinqBegin12");
-                int[] A = { -4, 12, -6, -4, 32, -47, -32, 96, -23, -5, 3, -75, -15 };
-                var res = (from a in A
-                           let r = Char.GetNumericValue(a.ToString().LastOrDefault())
-                           select r).Aggregate(1.0, (i, j) => i * j);
-                Console.Write("Mult = {0}", res);
-                Console.WriteLine("\n");
-            }
-            //LinqBegin13.Дано целое число N (> 0). Используя методы Range
-            //и Sum, найти сумму 1 + (1/2) + … + (1/N) (как вещественное число).
-            {
-                Console.WriteLine("LinqBegin13");
-                int A = 6;
-                var res = Enumerable.Range(1,A).Sum(i=>(1.0/i));
-                Console.Write("Sum = {0}", res);
-                Console.WriteLine("\n");
-            }
-            //LinqBegin14.Даны целые числа A и B(A< B).
-            //Используя мето-ды Range и Average, найти среднее арифметическое квадратов всех
-            //целых чисел от A до B включительно: (A^2 + (A + 1)^2 + … + B^2)/(B – A + 1) (как вещественное число).
-            {
-                Console.WriteLine("LinqBegin14");
-                int A = 5, B = 10;
-                var res = Enumerable.Range(A, B-A+1).Average(i => i*i);
-                Console.Write("Avg = {0}", res);
-                Console.WriteLine("\n");
-            }
-            //LinqBegin15.Дано целое число N(0 <= N <= 15). Используя методы Range и Aggregate,
-            //найти факториал числа N: N! = 1·2·…·N при N >= 1; 0! = 1.
-            //Чтобы избежать целочисленного переполнения, при
-            //вычислении факториала использовать вещественный числовой тип.
-            //Примечание.Решение данной задачи приведено в п. 5.2.
-            Console.WriteLine("LinqBegin15:");
-            const int N = 5;
-            Console.Write(Enumerable.Range(1, N).Aggregate(1.0, (a, e) => a * e));
-            Console.WriteLine("\n");
 
-            //2.2. Фильтрация, сортировка,
-            //теоретико-множественные операции
-            //Изучаемые запросы LINQ:
-            //Where , TakeWhile , SkipWhile , Take , Skip (фильтрация);
-            //OrderBy , OrderByDescending , ThenBy , ThenByDescending (сор-тировка);
-            //Distinct , Reverse (удаление повторяющихся элементов и ин-вертирование);
-            //Union , Intersect , Except (теоретико-множественные операции)
+            Console.WriteLine("\n\n");
 
-            //LinqBegin16.Дана целочисленная последовательность. Извлечь
-            //из нее все положительные числа, сохранив их исходный порядок
-            //следования.
 
-            //LinqBegin17.Дана целочисленная последовательность. Извлечь
-            //из нее все нечетные числа, сохранив их исходный порядок следо-вания
-            //и удалив все вхождения повторяющихся элементов, кроме первых.
 
-            //LinqBegin18.Дана целочисленная последовательность. Извлечь
-            //из нее все четные отрицательные числа,
-            //поменяв порядок извлечен-ных чисел на обратный.
 
-            //LinqBegin19.Даны цифра D(целое однозначное число) и целочисленная
-            //последовательность A. Извлечь из A все различные положительные числа,
-            //оканчивающиеся цифрой D(в исходном порядке).
-            //При наличии повторяющихся элементов удалять все их вхождения, кроме последних.
-            //Указание.Последовательно применить методы Reverse, Distinct, Reverse.
 
-            //LinqBegin20.Дана целочисленная последовательность. Извлечь
-            //из нее все положительные двузначные числа, отсортировав их по возрастанию.
+
+
+
 
             //LinqBegin21.Дана строковая последовательность.
             //Строки последовательности содержат только заглавные буквы латинского
