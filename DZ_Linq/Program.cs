@@ -31,6 +31,10 @@ namespace DZ_LINQ
     }
     class Program
     {
+        static void Task0()
+        {
+            Console.WriteLine("Good buy!");
+        }
         static void Task1()
         {
             Console.WriteLine(
@@ -401,23 +405,26 @@ namespace DZ_LINQ
         }
         public static void Main(string[] args)
         {
-            Console.WriteLine("Input task: ");
-            string N = Console.ReadLine();
-            //Получаем методы
-            MethodInfo[] MI = typeof(Program).GetMethods(BindingFlags.Static | BindingFlags.NonPublic);
-            //Показываем их
-            try
+            string N;
+            do
             {
-                //Выбираем метод который нам нужен по имени
-                MethodInfo method = MI.Where(a => a.Name == "Task" + N).First();
-                //Вызываем его
-                method.Invoke(null, null);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
-
+                Console.Write("Input task (0 - to exit, 99 - to all tasks): ");
+                N = Console.ReadLine();
+                //Получаем методы
+                MethodInfo[] MI = typeof(Program).GetMethods(BindingFlags.Static | BindingFlags.NonPublic);
+                //Показываем их
+                try
+                {
+                    //Выбираем метод который нам нужен по имени
+                    MethodInfo method = MI.Where(a => a.Name == "Task" + N).First();
+                    //Вызываем его
+                    method.Invoke(null, null);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+            } while (N != "0");
 
 
             Console.WriteLine("\n\n");
